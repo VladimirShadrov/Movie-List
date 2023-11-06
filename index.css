@@ -114,6 +114,7 @@ body {
   padding: 60px 50px 60px 70px;
   border-radius: 20px;
   background: #232323;
+  height: 650px;
 }
 
 .list__wrapper {
@@ -192,14 +193,21 @@ body {
   opacity: 0.3;
 }
 
-.list__item.list__item-viewed .item__title {
+.list__item.list__item-viewed {
   opacity: 0.3;
+}
+
+.list__item.list__item-viewed .item__title {
   text-decoration: line-through;
 }
 
 .list__item.list__item-viewed .item__title::before {
   background: #6532f8;
   opacity: 1;
+}
+
+.empty-list-title {
+  color: #f3f6f9;
 }
 
 @media (max-width: 768px) {
@@ -224,6 +232,7 @@ body {
 
   .list__content {
     padding: 30px 10px 30px 20px;
+    height: 580px;
   }
 
   .list__wrapper {
