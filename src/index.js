@@ -1,3 +1,4 @@
+import './index.css';
 import { FilmForm } from './components/form.component';
 import { FilmList } from './components/filmList.component';
 
