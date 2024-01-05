@@ -11,7 +11,7 @@ module.exports = {
   output: {
     filename: devMode ? 'main.js' : 'main.[hash].js',
     path: path.resolve(__dirname, 'dist'),
-    publicPath: './',
+    publicPath: devMode ? '/' : './',
     clean: true,
   },
   module: {
