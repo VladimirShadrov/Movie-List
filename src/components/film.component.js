@@ -4,24 +4,39 @@ export class Film {
     this.$filmCheckbox = this.$filmElement.querySelector('.js-film-checkbox');
     this.$deleteBtn = this.$filmElement.querySelector('.js-delete-film-btn');
     this.$filmTitle = this.$filmElement.querySelector('.js-film-title');
+    this.filmId = null;
+
+    this.isFilmChecked;
 
     this.addListeners();
   }
 
   addListeners() {
-    this.$filmCheckbox.addEventListener('change', this.markFilm);
-    this.$deleteBtn.addEventListener('click', this.deleteFilm);
+    this.$filmElement.addEventListener('click', this.filmElementClickHandler);
+    // this.$filmCheckbox.addEventListener('change', this.markFilm);
+    // this.$deleteBtn.addEventListener('click', this.deleteFilm);
   }
 
-  markFilm = () => {
-    if (this.$filmCheckbox.checked) {
+  filmElementClickHandler = (event) => {
+    if (event.target !== this.$deleteBtn) {
+      event.preventDefault();
+      this.markFilm();
+    } else {
+      this.deleteFilm();
+    }
+  };
+
+  markFilm() {
+    if (!this.isFilmChecked) {
       this.markAsViewed();
       this.$filmTitle.title = 'Посмотреть заново';
     } else {
       this.markAsNotViewed();
       this.$filmTitle.title = 'Пометить как просмотренный';
     }
-  };
+
+    this.isFilmChecked = !this.isFilmChecked;
+  }
 
   markAsViewed() {
     this.$filmElement.classList.add('list__item-viewed');
@@ -31,13 +46,16 @@ export class Film {
     this.$filmElement.classList.remove('list__item-viewed');
   }
 
-  deleteFilm = () => {
-    const event = new CustomEvent('deleteFilm', { detail: this.filmId });
-    document.body.dispatchEvent(event);
-  };
+  deleteFilm() {
+    console.log('Delete');
+    // const event = new CustomEvent('deleteFilm', { detail: this.filmId });
+    // document.body.dispatchEvent(event);
+  }
 
   createFilmElement(data) {
     const { id, name, viewed } = data;
+    this.isFilmChecked = viewed;
+    this.filmId = id;
     const filmHtml = `
           <div class="list__item ${viewed ? 'list__item-viewed' : ''}">
               <div class="item__film-title">
@@ -58,13 +76,6 @@ export class Film {
     const filmElement = new DOMParser().parseFromString(filmHtml, 'text/html').body.firstElementChild;
 
     return filmElement;
-  }
-
-  get filmData() {
-    return {
-      element: this.$filmElement,
-      filmId: this.filmId,
-    };
   }
 
   get element() {

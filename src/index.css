@@ -130,6 +130,7 @@ body {
   margin-bottom: 3px;
   background: #3a3939;
   border-radius: 10px;
+  cursor: pointer;
 }
 
 .list__item:last-child {
