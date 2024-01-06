@@ -9,13 +9,15 @@ export class Film {
   /**
    * @param {FilmData} filmData - Объект с данными фильма
    * @param {Function} deleteFilmCb - коллбек, который будет вызван в момент удаления фильма
+   * @param {Function} correctFilmCb - коллбек, который будет вызван в момент изменения статуса фильма
    */
-  constructor(filmData, deleteFilmCb) {
+  constructor(filmData, deleteFilmCb, correctFilmCb) {
     this.$filmElement = this.createFilmElement(filmData);
     this.$filmCheckbox = this.$filmElement.querySelector('.js-film-checkbox');
     this.$deleteBtn = this.$filmElement.querySelector('.js-delete-film-btn');
     this.$filmTitle = this.$filmElement.querySelector('.js-film-title');
     this.deleteFilmCb = deleteFilmCb;
+    this.correctFilmCb = correctFilmCb;
     this.filmId = filmData.id;
     this.isFilmChecked = filmData.viewed;
 
@@ -30,6 +32,10 @@ export class Film {
     if (event.target !== this.$deleteBtn) {
       event.preventDefault();
       this.markFilm();
+      this.correctFilmCb({
+        id: event.target.closest('.list__item').dataset.id,
+        viewed: this.isFilmChecked,
+      });
     } else {
       this.deleteFilm();
     }
@@ -65,7 +71,7 @@ export class Film {
   createFilmElement(data) {
     const { id, name, viewed } = data;
     const filmHtml = `
-          <div class="list__item ${viewed ? 'list__item-viewed' : ''}">
+          <div class="list__item ${viewed ? 'list__item-viewed' : ''}" data-id="${id}">
               <div class="item__film-title">
                   <input class="js-film-checkbox item__checkbox" type="checkbox" id="film-${id}" />
                   <label class="js-film-title item__title" for="film-${id}" title="Пометить как просмотренный">${name}</label>

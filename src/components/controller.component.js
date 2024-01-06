@@ -12,7 +12,7 @@ export class Controller {
    */
   init() {
     this.form = new FilmForm(document.querySelector('.js-film-form'), this.addFilm);
-    this.list = new FilmList(document.querySelector('.js-film-list'), this.deleteFilm);
+    this.list = new FilmList(document.querySelector('.js-film-list'), this.deleteFilm, this.correctFilmStatus);
     this.api = new Api();
     this.model = new Model();
     this.renderFilmList();
@@ -31,8 +31,9 @@ export class Controller {
    * Удаляет фильм
    * @param {string} id
    */
-  deleteFilm = (id) => {
-    console.log('Delete film: ', id);
+  deleteFilm = async (id) => {
+    await this.api.deleteFilm(id);
+    this.renderFilmList();
   };
 
   /**
@@ -50,5 +51,9 @@ export class Controller {
     this.renderFilmList();
   };
 
-  correctFilmStatus() {}
+  correctFilmStatus = async (filmData) => {
+    const { id, viewed } = filmData;
+
+    await this.api.correctFilmData(id, viewed);
+  };
 }

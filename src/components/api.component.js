@@ -1,3 +1,19 @@
+import { initializeApp } from 'firebase/app';
+import { getDatabase, ref, update, remove } from 'firebase/database';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyDTAeTMQa1sas8Uixn2x291Cu3gZ9i07WM',
+  authDomain: 'movie-list-app-3a1e8.firebaseapp.com',
+  databaseURL: 'https://movie-list-app-3a1e8-default-rtdb.firebaseio.com',
+  projectId: 'movie-list-app-3a1e8',
+  storageBucket: 'movie-list-app-3a1e8.appspot.com',
+  messagingSenderId: '652350244976',
+  appId: '1:652350244976:web:369575e7bee91841778cb5',
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
 export class Api {
   constructor() {
     this.url = 'https://movie-list-app-3a1e8-default-rtdb.firebaseio.com/films.json';
@@ -50,15 +66,30 @@ export class Api {
     }
   }
 
-  async deleteFilm() {
+  /**
+   * Удаляет фильм
+   * @param {string} id
+   */
+  async deleteFilm(id) {
     try {
+      const filmToRemove = ref(db, `films/${id}`);
+      await remove(filmToRemove);
     } catch (error) {
       throw new Error(`Что-то пошло не так: ${error}`);
     }
   }
 
-  async correctFilmData() {
+  /**
+   * Изменяет статус фильма (просмотрен или нет)
+   * @param {string} id
+   * @param {boolean} viewed
+   */
+  async correctFilmData(id, viewed) {
     try {
+      const filmToUpdate = ref(db, `films/${id}`);
+      const updatedData = { viewed };
+
+      await update(filmToUpdate, updatedData);
     } catch (error) {
       throw new Error(`Что-то пошло не так: ${error}`);
     }
