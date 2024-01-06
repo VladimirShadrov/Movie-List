@@ -2,6 +2,7 @@ import { FilmForm } from './form.component';
 import { FilmList } from './filmList.component';
 import { Api } from './api.component';
 import { Model } from './model.component';
+import { Loader } from './loader.component';
 
 export class Controller {
   constructor() {
@@ -22,9 +23,11 @@ export class Controller {
    * Получает список фильмов и отрисовывает его
    */
   async renderFilmList() {
+    const loader = new Loader();
     const films = await this.api.getFilms();
     this.model.mapFilmList(films);
     this.list.renderList(this.model.films);
+    loader.hide();
   }
 
   /**
@@ -51,6 +54,16 @@ export class Controller {
     this.renderFilmList();
   };
 
+  /**
+   * @typedef FilmData
+   * @property {string} id
+   * @property {boolean} viewed
+   */
+
+  /**
+   * Изменяет статус фильма
+   * @param {FilmData} filmData
+   */
   correctFilmStatus = async (filmData) => {
     const { id, viewed } = filmData;
 
