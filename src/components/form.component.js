@@ -11,6 +11,7 @@ export class FilmForm {
     this.$filmInput.addEventListener('keydown', (event) => {
       if (event.keyCode === 13) {
         this.addFilm();
+        this.$filmInput.blur();
       }
     });
   }

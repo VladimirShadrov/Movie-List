@@ -1,7 +1,6 @@
 export class Film {
-  constructor(title) {
-    this.filmId = Math.random();
-    this.$filmElement = this.createFilmElement(title);
+  constructor(filmData) {
+    this.$filmElement = this.createFilmElement(filmData);
     this.$filmCheckbox = this.$filmElement.querySelector('.js-film-checkbox');
     this.$deleteBtn = this.$filmElement.querySelector('.js-delete-film-btn');
     this.$filmTitle = this.$filmElement.querySelector('.js-film-title');
@@ -10,11 +9,11 @@ export class Film {
   }
 
   addListeners() {
-    this.$filmCheckbox.addEventListener('change', this.markFilm.bind(this));
-    this.$deleteBtn.addEventListener('click', this.deleteFilm.bind(this));
+    this.$filmCheckbox.addEventListener('change', this.markFilm);
+    this.$deleteBtn.addEventListener('click', this.deleteFilm);
   }
 
-  markFilm() {
+  markFilm = () => {
     if (this.$filmCheckbox.checked) {
       this.markAsViewed();
       this.$filmTitle.title = 'Посмотреть заново';
@@ -22,7 +21,7 @@ export class Film {
       this.markAsNotViewed();
       this.$filmTitle.title = 'Пометить как просмотренный';
     }
-  }
+  };
 
   markAsViewed() {
     this.$filmElement.classList.add('list__item-viewed');
@@ -32,17 +31,18 @@ export class Film {
     this.$filmElement.classList.remove('list__item-viewed');
   }
 
-  deleteFilm() {
+  deleteFilm = () => {
     const event = new CustomEvent('deleteFilm', { detail: this.filmId });
     document.body.dispatchEvent(event);
-  }
+  };
 
-  createFilmElement(title) {
+  createFilmElement(data) {
+    const { id, name, viewed } = data;
     const filmHtml = `
-          <div class="list__item">
+          <div class="list__item ${viewed ? 'list__item-viewed' : ''}">
               <div class="item__film-title">
-                  <input class="js-film-checkbox item__checkbox" type="checkbox" id="film-${this.filmId}" />
-                  <label class="js-film-title item__title" for="film-${this.filmId}" title="Пометить как просмотренный">${title}</label>
+                  <input class="js-film-checkbox item__checkbox" type="checkbox" id="film-${id}" />
+                  <label class="js-film-title item__title" for="film-${id}" title="Пометить как просмотренный">${name}</label>
               </div>
               <button class="js-delete-film-btn item__delete-btn" title="Удалить фильм">
                   <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -65,5 +65,9 @@ export class Film {
       element: this.$filmElement,
       filmId: this.filmId,
     };
+  }
+
+  get element() {
+    return this.$filmElement;
   }
 }
