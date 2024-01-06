@@ -16,14 +16,15 @@ export class Controller {
     this.list = new FilmList(document.querySelector('.js-film-list'), this.deleteFilm, this.correctFilmStatus);
     this.api = new Api();
     this.model = new Model();
-    this.renderFilmList();
+
+    const loader = new Loader();
+    this.renderFilmList(loader);
   }
 
   /**
    * Получает список фильмов и отрисовывает его
    */
-  async renderFilmList() {
-    const loader = new Loader();
+  async renderFilmList(loader) {
     const films = await this.api.getFilms();
     this.model.mapFilmList(films);
     this.list.renderList(this.model.films);
@@ -35,8 +36,9 @@ export class Controller {
    * @param {string} id
    */
   deleteFilm = async (id) => {
+    const loader = new Loader();
     await this.api.deleteFilm(id);
-    this.renderFilmList();
+    this.renderFilmList(loader);
   };
 
   /**
@@ -50,8 +52,9 @@ export class Controller {
    * @param {FilmData} filmData
    */
   addFilm = async (filmData) => {
+    const loader = new Loader();
     await this.api.addNewFilm(filmData);
-    this.renderFilmList();
+    this.renderFilmList(loader);
   };
 
   /**
