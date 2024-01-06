@@ -1,22 +1,31 @@
 export class Film {
-  constructor(filmData) {
+  /**
+   * @typedef FilmData
+   * @property {string} id - ИД фильма
+   * @property {string} name - Название фильма
+   * @property {boolean} viewed - Просмотрен или нет фильм
+   */
+
+  /**
+   * @param {FilmData} filmData - Объект с данными фильма
+   * @param {Function} deleteFilmCb - коллбек, который будет вызван в момент удаления фильма
+   */
+  constructor(filmData, deleteFilmCb) {
     this.$filmElement = this.createFilmElement(filmData);
     this.$filmCheckbox = this.$filmElement.querySelector('.js-film-checkbox');
     this.$deleteBtn = this.$filmElement.querySelector('.js-delete-film-btn');
     this.$filmTitle = this.$filmElement.querySelector('.js-film-title');
-    this.filmId = null;
+    this.deleteFilmCb = deleteFilmCb;
+    this.filmId = filmData.id;
+    this.isFilmChecked = filmData.viewed;
 
-    this.isFilmChecked;
-
-    this.addListeners();
-  }
-
-  addListeners() {
     this.$filmElement.addEventListener('click', this.filmElementClickHandler);
-    // this.$filmCheckbox.addEventListener('change', this.markFilm);
-    // this.$deleteBtn.addEventListener('click', this.deleteFilm);
   }
 
+  /**
+   * Обработчик клика по фильму
+   * @param {MouseEvent} event
+   */
   filmElementClickHandler = (event) => {
     if (event.target !== this.$deleteBtn) {
       event.preventDefault();
@@ -26,36 +35,35 @@ export class Film {
     }
   };
 
+  /**
+   * Помечает фильм просмотренным / не просмотренным
+   */
   markFilm() {
     if (!this.isFilmChecked) {
-      this.markAsViewed();
+      this.$filmElement.classList.add('list__item-viewed');
       this.$filmTitle.title = 'Посмотреть заново';
     } else {
-      this.markAsNotViewed();
+      this.$filmElement.classList.remove('list__item-viewed');
       this.$filmTitle.title = 'Пометить как просмотренный';
     }
 
     this.isFilmChecked = !this.isFilmChecked;
   }
 
-  markAsViewed() {
-    this.$filmElement.classList.add('list__item-viewed');
-  }
-
-  markAsNotViewed() {
-    this.$filmElement.classList.remove('list__item-viewed');
-  }
-
+  /**
+   * Удаляет фильм
+   */
   deleteFilm() {
-    console.log('Delete');
-    // const event = new CustomEvent('deleteFilm', { detail: this.filmId });
-    // document.body.dispatchEvent(event);
+    this.deleteFilmCb(this.filmId);
   }
 
+  /**
+   * Создает HTML фильма
+   * @param {Object} data
+   * @returns HTML фильма
+   */
   createFilmElement(data) {
     const { id, name, viewed } = data;
-    this.isFilmChecked = viewed;
-    this.filmId = id;
     const filmHtml = `
           <div class="list__item ${viewed ? 'list__item-viewed' : ''}">
               <div class="item__film-title">
@@ -78,6 +86,9 @@ export class Film {
     return filmElement;
   }
 
+  /**
+   * Возвращает HTML фильма
+   */
   get element() {
     return this.$filmElement;
   }

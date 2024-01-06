@@ -1,35 +1,30 @@
 import { Film } from './film.component';
 
 export class FilmList {
-  constructor(rootElement) {
+  /**
+   * @param {HTMLElement} rootElement - Корневой элемент списка фильмов
+   * @param {Function} deleteFilmCb - коллбек, который будет вызван в момент удаления фильма
+   */
+  constructor(rootElement, deleteFilmCb) {
     this.$filmListContainer = rootElement;
-    // this.filmList = [];
-
-    this.addListeners();
-    // this.renderList();
+    this.deleteFilmCb = deleteFilmCb;
   }
 
-  addListeners() {
-    document.body.addEventListener('addNewFilm', this.addFilm);
-    document.body.addEventListener('deleteFilm', this.deleteFilm);
-  }
+  /**
+   * @typedef FilmData
+   * @property {string} id - ИД фильма
+   * @property {string} name - Название фильма
+   * @property {boolean} viewed - Просмотрен или нет фильм
+   */
 
-  addFilm = (event) => {
-    // this.filmList.push(new Film(event.detail).filmData);
-    this.renderList();
-  };
-
-  deleteFilm = (event) => {
-    const filmIndex = this.filmList.findIndex((film) => film.filmId === event.detail);
-    this.filmList.splice(filmIndex, 1);
-    this.renderList();
-  };
-
+  /**
+   * Отрисовывает список фильмов
+   * @param {FilmData[]} filmList
+   */
   renderList(filmList) {
-    console.log('Films: ', filmList);
     this.$filmListContainer.innerHTML = '';
     filmList.forEach((film) => {
-      this.$filmListContainer.append(new Film(film).element);
+      this.$filmListContainer.append(new Film(film, this.deleteFilmCb).element);
     });
 
     if (!filmList.length) {
